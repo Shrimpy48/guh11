@@ -4,8 +4,9 @@ from time import sleep
 
 cube = Cube()
 gui = Gui()
-gui.draw(cube.data)
-cube.turn_layer(cube.f)
-sleep(1)
-gui.draw(cube.data)
-input()
+while True:
+	event = gui.handle()
+	if event == -1:
+		break
+	else:
+		gui.draw(cube.data)

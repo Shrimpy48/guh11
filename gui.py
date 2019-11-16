@@ -22,6 +22,11 @@ class Gui:
 	def __init__(self):
 		self.screen = pygame.display.set_mode(Gui.size)
 
+	def handle(self):
+		event = pygame.event.poll()
+		if event.type == pygame.QUIT:
+			return -1
+
 	def get_colour(self, face):
 		return Gui.colourMap[face]
 
