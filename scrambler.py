@@ -62,3 +62,17 @@ def get_scramble(n_moves=randint(25, 35)):
 
     moves_str = reduce(lambda a, b: a + " " + b, moves)
     return moves_str
+
+
+def get_scrambled_cube_with_moves(cube=Cube(), n_moves=None):
+    if n_moves is not None:
+        moves = get_scramble(n_moves)
+    else:
+        moves = get_scramble()
+    for move in moves.split():
+        cube.parse_move(move)
+    return cube, moves
+
+
+def get_scrambled_cube(cube=Cube(), n_moves=None):
+    return get_scrambled_cube_with_moves(cube, n_moves)[0]
