@@ -99,6 +99,73 @@ class Cube:
                 self.rotate(self.y)
             self.rotate(self.x)
 
+    def parse_move(self, move):
+        if len(move) == 3:
+            move = move.replace("'", "")
+        if move[-1] == "'":
+            move = move[:-1]
+            self.parse_move(move + "2")
+        elif move[-1] == "2":
+            move = move[:-1]
+            self.parse_move(move)
+        # if move[0] != "2" and move[-1] != "'":
+        
+        if move == "U":
+            self.turn_layer(self.u)
+        elif move == "D":
+            self.turn_layer(self.d)
+        elif move == "L":
+            self.turn_layer(self.l)
+        elif move == "R":
+            self.turn_layer(self.r)
+        elif move == "F":
+            self.turn_layer(self.f)
+        elif move == "B":
+            self.turn_layer(self.b)
+
+        elif move == "x":
+            self.rotate(self.x)
+        elif move == "y":
+            self.rotate(self.y)
+        elif move == "z":
+            self.rotate(self.z)
+
+        elif move == "M":
+            self.parse_move("x'")
+            self.parse_move("L'")
+            self.parse_move("R")
+        elif move == "E":
+            self.parse_move("y'")
+            self.parse_move("U")
+            self.parse_move("D'")
+        elif move == "S":
+            self.parse_move("z")
+            self.parse_move("F'")
+            self.parse_move("B")
+
+        elif move == "u":
+            self.parse_move("y")
+            self.parse_move("D")
+        elif move == "d":
+            self.parse_move("y'")
+            self.parse_move("U")
+        elif move == "l":
+            self.parse_move("x'")
+            self.parse_move("R")
+        elif move == "r":
+            self.parse_move("x")
+            self.parse_move("L")
+        elif move == "f":
+            self.parse_move("z")
+            self.parse_move("B")
+        elif move == "b":
+            self.parse_move("z'")
+            self.parse_move("F")
+
+    def parse_moves(self, move_str):
+        moves = move_str.split()
+        for move in moves:
+            self.parse_move(move)
 
 
 cube = Cube()
