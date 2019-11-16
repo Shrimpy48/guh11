@@ -111,12 +111,48 @@ def get_edge_from_pos(cube, position):
 
 def get_blind(cube):
     rotate_home(cube)
-
     print("corners")
 
+    corners_str = ""
+
+    edge = get_edge_from_pos(cube, [0,1,2])
+    to_pos = get_pos_from_edge(edge[0], edge[1])
+
+    corners_str += " " + letter_scheme[to_pos[0]][to_pos[1]][to_pos[2]]
+
+    while True:
+        edge = get_edge_from_pos(cube, to_pos)
+        to_pos = get_pos_from_edge(edge[0], edge[1])
+        corners_str += " " + letter_scheme[to_pos[0]][to_pos[1]][to_pos[2]]
+        if to_pos in  [[0,1,2],[3,1,0]]:
+            break
+
+    print(corners_str)
+
+letter_scheme = [[["A","A","B"],
+                  ["D","0","B"],
+                  ["D","C","C"]],
+
+                 [["E","E","F"],
+                  ["H","0","F"],
+                  ["H","G","G"]],
+
+                 [["I","I","J"],
+                  ["L","0","J"],
+                  ["L","K","K"]],
+
+                 [["M","M","N"],
+                  ["P","0","N"],
+                  ["P","O","O"]],
+
+                 [["Q","Q","R"],
+                  ["T","0","R"],
+                  ["T","S","S"]],
+
+                 [["U","U","V"],
+                  ["X","0","V"],
+                  ["X","W","W"]],]
 
 
-print(get_pos_from_edge(2,0))
-get_edge_from_pos(cube, [0,0,1])
-
+get_blind(cube)
 
