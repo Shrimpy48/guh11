@@ -8,6 +8,9 @@ while True:
     action = gui.handle()
     if action == -1:
         break
+    elif action == 1:
+    	gui.draw(cube.data)
+    	cube.scramble()
     else:
         gui.draw(cube.data)
         if action is not None:
