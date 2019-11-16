@@ -285,3 +285,5 @@ class Cube:
 
         moves_str = reduce(lambda a, b: a + " " + b, moves)
         self.parse_moves(moves_str)
+
+        return moves_str
