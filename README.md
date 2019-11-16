@@ -1,5 +1,5 @@
-#Virtual Cube
-##Proudly developed by Team DNF
+##Virtual Cube
+###Proudly developed by Team DNF
 
 A virtual Rubik's Cube.
 Current features:
