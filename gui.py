@@ -15,7 +15,7 @@ class Gui:
 		Cube.f: (0, 255, 0),       	# green
 		Cube.b: (0, 0, 255),		# blue
 		Cube.r: (255, 0, 0),		# red
-		Cube.l: (0, 127, 255)		# orange
+		Cube.l: (255, 127, 0)		# orange
 	}
 	edgeWidth = 2
 
