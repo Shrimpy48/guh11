@@ -1,4 +1,5 @@
 import pygame, time
+import tkinter as tk
 from cube import Cube
 
 class Gui:
@@ -6,16 +7,16 @@ class Gui:
     margin = 10 # distance between cube and side
     gridSize = 20 # size of grids
     blackGrids = 1 # number of grids occupied by black plastic borders
-    colourGrids = 2 # number of grids occupied by coloured stickers
+    colourGrids = 3 # number of grids occupied by coloured stickers
     colourMap = {
         -1: (0, 0, 0),       # black for plastic
         -2: (100, 100, 100),  # grey for borders
         Cube.u: (255, 255, 255),    # white
-        Cube.d: (255, 255, 0),        # yellow
-        Cube.f: (0, 255, 0),           # green
+        Cube.d: (255, 255, 0),      # yellow
+        Cube.f: (0, 255, 0),        # green
         Cube.b: (0, 0, 255),        # blue
         Cube.r: (255, 0, 0),        # red
-        Cube.l: (255, 127, 0)        # orange
+        Cube.l: (255, 127, 0)       # orange
     }
     edgeWidth = 2
     possibleWideableMoves = ["u", "d", "r", "l", "f", "b"]
@@ -23,18 +24,22 @@ class Gui:
 
     def __init__(self):
         self.screen = pygame.display.set_mode(Gui.size)
+        pygame.font.init()
+        self.font = pygame.font.Font(pygame.font.get_default_font(), 16)
 
     def handle(self):
         event = pygame.event.poll()
         if event.type == pygame.QUIT:
             return -1
-        elif int(time.time() * 10) % 20 == 0:
-            textIn = self.get_text()
-            return textIn
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            pos = pygame.mouse.get_pos()
+            button = pygame.Rect(600, 100, 120, 30)
+            if button.collidepoint(pos):
+                return self.get_text()
 
     def get_text(self):
         while True:
-            movesIn = input("Enter moves: ")
+            movesIn = self.input_from_window("Enter your moves: ")
             splitMoves = [move for move in movesIn.split(" ") if move != ""]
             possible = True
             for move in splitMoves:
@@ -56,7 +61,32 @@ class Gui:
             if possible:
                 return movesIn
 
+    def input_from_window(self, labelStr):
+        def get():
+            nonlocal output
+            output = entry.get()
+            window.destroy()
 
+        window = tk.Tk()
+        window.geometry("300x100");
+
+        label = tk.Label(window, text = labelStr)
+        label.pack()
+
+        entry = tk.Entry(window, width = 150)
+        entry.pack()
+        entry.focus_set()
+
+        button = tk.Button(window, text = "Enter", command = get)
+        button.pack()
+
+        output = ""
+
+        window.mainloop()
+        print(output)
+        return output
+
+        
 
     def get_colour(self, face):
         return Gui.colourMap[face]
@@ -162,4 +192,8 @@ class Gui:
             width = Gui.edgeWidth if polygon[0] == -2 else 0
             colour = self.get_colour(polygon[0])
             pygame.draw.polygon(self.screen, colour, points, width)
+        button = pygame.Rect(600, 100, 120, 30)
+        pygame.draw.rect(self.screen, (100, 100, 100), button)
+        text = self.font.render("Enter Moves", True, (255, 255, 255))
+        self.screen.blit(text, dest=(610, 108))
         pygame.display.flip()
