@@ -1,0 +1,25 @@
+w = U
+a = L
+s = F
+d = R
+q = D
+e = B
+
+i = x
+j = y
+k = x'
+l = y'
+u = z'
+o = z
+
+RS+w = E'
+RS+a = M
+RS+s = S
+RS+d = M'
+RS+q = E
+RS+e = S'
+
+LS = prime modifier
+LC = double modifier
+LA = wide modifier
+
