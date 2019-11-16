@@ -34,9 +34,12 @@ class Gui:
                 return -1
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
-                button = pygame.Rect(600, 100, 120, 30)
-                if button.collidepoint(pos):
+                moveButton = pygame.Rect(600, 100, 120, 30)
+                scrambleButton = pygame.Rect(600, 300, 95, 30)
+                if moveButton.collidepoint(pos):
                     return self.get_text()
+                elif scrambleButton.collidepoint(pos):
+                    return 1
             elif event.type == pygame.KEYDOWN:
                 return self.handle_keypress(event.key)
 
@@ -81,8 +84,6 @@ class Gui:
             outStr = outStr.lower()
         return outStr
 
-
-
     def get_text(self):
         while True:
             movesIn = self.input_from_window("Enter your moves: ")
@@ -123,8 +124,8 @@ class Gui:
         entry.pack()
         entry.focus_set()
 
-        button = tk.Button(window, text = "Enter", command = get)
-        button.pack()
+        moveButton = tk.Button(window, text = "Enter", command = get)
+        moveButton.pack()
 
         output = ""
 
@@ -238,8 +239,14 @@ class Gui:
             width = Gui.edgeWidth if polygon[0] == -2 else 0
             colour = self.get_colour(polygon[0])
             pygame.draw.polygon(self.screen, colour, points, width)
-        button = pygame.Rect(600, 100, 120, 30)
-        pygame.draw.rect(self.screen, (100, 100, 100), button)
-        text = self.font.render("Enter Moves", True, (255, 255, 255))
-        self.screen.blit(text, dest=(610, 108))
+        moveButton = pygame.Rect(600, 100, 120, 30)
+        pygame.draw.rect(self.screen, (100, 100, 100), moveButton)
+        moveText = self.font.render("Enter Moves", True, (255, 255, 255))
+        self.screen.blit(moveText, dest=(610, 108))
+
+        scrambleButton = pygame.Rect(600, 300, 95, 30)
+        pygame.draw.rect(self.screen, (100, 100, 100), scrambleButton)
+        scrambleText = self.font.render("Scramble", True, (255, 255, 255))
+        self.screen.blit(scrambleText, dest=(610, 308))
+
         pygame.display.flip()
