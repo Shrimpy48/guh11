@@ -70,7 +70,8 @@ class Cube:
         elif face == self.b:
             self.data[0][0][0], self.data[0][0][1], self.data[0][0][2], self.data[3][0][2], self.data[3][1][2], self.data[3][2][2], self.data[5][2][2], self.data[5][2][1], self.data[5][2][0], self.data[1][2][0], self.data[1][1][0], self.data[1][0][0] = self.data[3][0][2], self.data[3][1][2], self.data[3][2][2], self.data[5][2][2], self.data[5][2][1], self.data[5][2][0], self.data[1][2][0], self.data[1][1][0], self.data[1][0][0], self.data[0][0][0], self.data[0][0][1], self.data[0][0][2]
 
-    def reverse_face(self, face):
+    @staticmethod
+    def reverse_face(face):
         return list(reversed([list(reversed(row)) for row in face]))
 
     def rotate(self, axis):
@@ -97,3 +98,9 @@ class Cube:
             for i in range(3):
                 self.rotate(self.y)
             self.rotate(self.x)
+
+
+
+cube = Cube()
+cube.init_cube()
+cube.rotate(cube.x)
