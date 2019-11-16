@@ -21,7 +21,7 @@ class Cube:
 
 
     def turnFace(self, face):
-        self.data[face][0][0], self.data[face][0][1], self.data[face][0][2], self.data[face][1][0], self.data[face][1][2], self.data[face][2][0], self.data[face][2][1], self.data[face][2][2] = self.data[face][2][0], self.data[face][1][0], self.data[face][0][0], self.data[face][2][2], self.data[face][0][1], self.data[face][2][2], self.data[face][1][2], self.data[face][0][2]
+        self.data[face][0][0], self.data[face][0][1], self.data[face][0][2], self.data[face][1][0], self.data[face][1][2], self.data[face][2][0], self.data[face][2][1], self.data[face][2][2] = self.data[face][2][0], self.data[face][1][0], self.data[face][0][0], self.data[face][2][1], self.data[face][0][1], self.data[face][2][2], self.data[face][1][2], self.data[face][0][2]
 
     def turnLayer(self, face):# face = "R"
         self.data[1] = [[1,2,3],[4,5,6],[7,8,9]]
@@ -37,19 +37,26 @@ class Cube:
         if face == self.r:
             #self.data[3][0][2], self.data[3][1][2], self.data[3][2][2], self.data[3][0][1], self.data[3][2][1], self.data[3][0][0], self.data[3][1][0], self.data[3][2][0] = self.data[3][0][0], self.data[3][0][1], self.data[3][0][2], self.data[3][1][0], self.data[3][1][2], self.data[3][2][0], self.data[3][2][1], self.data[3][2][2]
             self.data[0][2][2], self.data[0][1][2], self.data[0][0][2], self.data[4][0][0], self.data[4][1][0], self.data[4][2][0], self.data[5][2][2], self.data[5][1][2], self.data[5][0][2], self.data[2][2][2], self.data[2][1][2], self.data[2][0][2] = self.data[2][2][2], self.data[2][1][2], self.data[2][0][2], self.data[0][2][2], self.data[0][1][2], self.data[0][0][2], self.data[4][0][0], self.data[4][1][0], self.data[4][2][0], self.data[5][2][2], self.data[5][1][2], self.data[5][0][2]
-            self.printNet()
 
         if face == self.l:
             #self.data[1][0][0], self.data[1][0][1], self.data[1][0][2], self.data[1][1][0], self.data[1][1][2], self.data[1][2][0], self.data[1][2][1], self.data[1][2][2] = self.data[1][2][0], self.data[1][1][0], self.data[1][0][0], self.data[1][2][2], self.data[1][0][1], self.data[1][2][2], self.data[1][1][2], self.data[1][0][2]
             self.data[0][0][0], self.data[0][1][0], self.data[0][2][0], self.data[2][0][0], self.data[2][1][0], self.data[2][2][0], self.data[5][0][0], self.data[5][1][0], self.data[5][2][0], self.data[4][2][2], self.data[4][1][2], self.data[4][0][2] = self.data[4][2][2], self.data[4][1][2], self.data[4][0][2], self.data[0][0][0], self.data[0][1][0], self.data[0][2][0], self.data[2][0][0], self.data[2][1][0], self.data[2][2][0], self.data[5][0][0], self.data[5][1][0], self.data[5][2][0]
-            self.printNet()
 
         if face == self.u:
             #self.data[0][0][0], self.data[0][0][1], self.data[0][0][2], self.data[0][1][0], self.data[0][1][2], self.data[0][2][0], self.data[0][2][1], self.data[0][2][2] = self.data[0][2][0], self.data[0][1][0], self.data[0][0][0], self.data[0][2][2], self.data[0][0][1], self.data[0][2][2], self.data[0][1][2], self.data[0][0][2]
             self.data[1][0][0], self.data[1][0][1], self.data[1][0][2], self.data[2][0][0], self.data[2][0][1], self.data[2][0][2], self.data[3][0][0], self.data[3][0][1], self.data[3][0][2], self.data[4][0][0], self.data[4][0][1], self.data[4][0][2] = self.data[2][0][0], self.data[2][0][1], self.data[2][0][2], self.data[3][0][0], self.data[3][0][1], self.data[3][0][2], self.data[4][0][0], self.data[4][0][1], self.data[4][0][2], self.data[1][0][0], self.data[1][0][1], self.data[1][0][2]
-            self.printNet()
+
+        if face == self.f:
+            self.data[0][2][0], self.data[0][2][1], self.data[0][2][2], self.data[3][0][0], self.data[3][1][0], self.data[3][2][0], self.data[5][0][2], self.data[5][0][1], self.data[5][0][0], self.data[1][2][2], self.data[1][1][2], self.data[1][0][2] = self.data[1][2][2], self.data[1][1][2], self.data[1][0][2], self.data[0][2][0], self.data[0][2][1], self.data[0][2][2], self.data[3][0][0], self.data[3][1][0], self.data[3][2][0], self.data[5][0][2], self.data[5][0][1], self.data[5][0][0]
+
+        if face == self.d:
+            df=0
+        if face == self.b:
+            df=0
+        self.printNet()
+
 
 
 
 cube = Cube()
-cube.turnLayer(cube.l)
+cube.turnLayer(cube.f)
