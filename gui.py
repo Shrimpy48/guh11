@@ -1,4 +1,4 @@
-import pygame, tkinter, time
+import pygame, time
 from cube import Cube
 
 class Gui:
@@ -28,17 +28,17 @@ class Gui:
 		event = pygame.event.poll()
 		if event.type == pygame.QUIT:
 			return -1
-		else if int(time.time() * 10) % 20 == 0:
+		elif int(time.time() * 10) % 20 == 0:
 			textIn = self.get_text()
 			return textIn
 
 	def get_text(self):
 		while True:
 			movesIn = input("Enter moves: ")
-			splitMoves = [move for moves in movesIn.split(" ") if move != ""]
+			splitMoves = [move for move in movesIn.split(" ") if move != ""]
 			possible = True
 			for move in splitMoves:
-				if move[0].lower() in possibleWideableMoves or move[0] in possibleMoves:
+				if move[0].lower() in Gui.possibleWideableMoves or move[0] in Gui.possibleMoves:
 					if len(move) <= 3:
 						if len(move) > 1:
 							if move[1] == "2" or move[1] == "'":
