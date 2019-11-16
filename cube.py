@@ -168,6 +168,7 @@ class Cube:
             self.parse_move(move)
 
 
+
 cube = Cube()
 cube.init_cube()
 cube.rotate(cube.x)
