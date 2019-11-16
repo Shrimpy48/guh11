@@ -1,4 +1,4 @@
-import pygame
+import pygame, tkinter, time
 from cube import Cube
 
 class Gui:
@@ -18,6 +18,8 @@ class Gui:
 		Cube.l: (255, 127, 0)		# orange
 	}
 	edgeWidth = 2
+	possibleWideableMoves = ["u", "d", "r", "l", "f", "b"]
+	possibleMoves = ["x", "y", "z", "S", "M", "E"]
 
 	def __init__(self):
 		self.screen = pygame.display.set_mode(Gui.size)
@@ -26,6 +28,35 @@ class Gui:
 		event = pygame.event.poll()
 		if event.type == pygame.QUIT:
 			return -1
+		else if int(time.time() * 10) % 20 == 0:
+			textIn = self.get_text()
+			return textIn
+
+	def get_text(self):
+		while True:
+			movesIn = input("Enter moves: ")
+			splitMoves = [move for moves in movesIn.split(" ") if move != ""]
+			possible = True
+			for move in splitMoves:
+				if move[0].lower() in possibleWideableMoves or move[0] in possibleMoves:
+					if len(move) <= 3:
+						if len(move) > 1:
+							if move[1] == "2" or move[1] == "'":
+								if len(move) == 3:
+									if move[2] != "2" and move[2] != "'":
+										possible = False
+							else:
+								possible = False
+					else:
+						possible = False
+				else:
+					possible = False
+				if not possible:
+					break
+			if possible:
+				return movesIn
+
+
 
 	def get_colour(self, face):
 		return Gui.colourMap[face]

@@ -5,8 +5,11 @@ from time import sleep
 cube = Cube()
 gui = Gui()
 while True:
-	event = gui.handle()
-	if event == -1:
+	action = gui.handle()
+	if action == -1:
 		break
 	else:
+		gui.draw(cube.data)
+		cube.parse_moves(action)
+		sleep(0.05)
 		gui.draw(cube.data)
