@@ -28,14 +28,60 @@ class Gui:
         self.font = pygame.font.Font(pygame.font.get_default_font(), 16)
 
     def handle(self):
-        event = pygame.event.poll()
-        if event.type == pygame.QUIT:
-            return -1
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            pos = pygame.mouse.get_pos()
-            button = pygame.Rect(600, 100, 120, 30)
-            if button.collidepoint(pos):
-                return self.get_text()
+        events = pygame.event.get()
+        for event in events:
+            if event.type == pygame.QUIT:
+                return -1
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                button = pygame.Rect(600, 100, 120, 30)
+                if button.collidepoint(pos):
+                    return self.get_text()
+            elif event.type == pygame.KEYDOWN:
+                return self.handle_keypress(event.key)
+
+    def handle_keypress(self, key):
+        keys = pygame.key.get_pressed()
+        outStr = ""
+        slice = keys[pygame.K_RSHIFT]
+        notOuterBlock = slice
+        if key == pygame.K_s:
+            outStr += "F" if not slice else "S"
+        elif key == pygame.K_w:
+            outStr += "U" if not slice else "E'"
+        elif key == pygame.K_a:
+            outStr += "L" if not slice else "M"
+        elif key == pygame.K_d:
+            outStr += "R" if not slice else "M'"
+        elif key == pygame.K_q:
+            outStr += "D" if not slice else "E"
+        elif key == pygame.K_e:
+            outStr += "B" if not slice else "S'"
+        else:
+            notOuterBlock = True
+            if key == pygame.K_k:
+                outStr += "x'"
+            elif key == pygame.K_i:
+                outStr += "x"
+            elif key == pygame.K_j:
+                outStr += "y"
+            elif key == pygame.K_l:
+                outStr += "y'"
+            elif key == pygame.K_u:
+                outStr += "z'"
+            elif key == pygame.K_o:
+                outStr += "z"
+            else:
+                return None
+        if keys[pygame.K_LSHIFT] and not notOuterBlock:
+            outStr += "'"
+        if keys[pygame.K_LCTRL]:
+            outStr += "2"
+        if keys[pygame.K_LALT] and not notOuterBlock:
+            outStr = outStr.lower()
+        return outStr
+
+
 
     def get_text(self):
         while True:
