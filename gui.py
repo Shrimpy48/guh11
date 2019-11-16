@@ -11,7 +11,7 @@ class Gui:
 		-1: (0, 0, 0),       # black for plastic
 		-2: (100, 100, 100),  # grey for borders
 		Cube.u: (255, 255, 255),	# white
-		Cube.d: (0, 255, 255),		# yellow
+		Cube.d: (255, 255, 0),		# yellow
 		Cube.f: (0, 255, 0),       	# green
 		Cube.b: (0, 0, 255),		# blue
 		Cube.r: (255, 0, 0),		# red
