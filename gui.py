@@ -1,6 +1,9 @@
 import pygame
 import tkinter as tk
+from time import sleep
+
 from cube import Cube
+from scrambler import get_scramble
 
 
 class Gui:
@@ -23,10 +26,11 @@ class Gui:
     possibleWideableMoves = ["u", "d", "r", "l", "f", "b"]
     possibleMoves = ["x", "y", "z", "S", "M", "E"]
 
-    def __init__(self):
+    def __init__(self, cube):
         self.screen = pygame.display.set_mode(Gui.size)
         pygame.font.init()
         self.font = pygame.font.Font(pygame.font.get_default_font(), 16)
+        self.cube = cube
 
     def handle(self):
         events = pygame.event.get()
@@ -139,8 +143,7 @@ class Gui:
     def get_colour(face):
         return Gui.colourMap[face]
 
-    @staticmethod
-    def get_polygons(cube_data):
+    def get_polygons(self):
         side_grids = Gui.colourGrids * 3 + Gui.blackGrids * 4
         polygons = [
             # black plastic
@@ -165,7 +168,7 @@ class Gui:
         # front face
         for y in range(3):
             for x in range(3):
-                colour = cube_data[Cube.f][y][x]
+                colour = self.cube.data[Cube.f][y][x]
                 points = [
                     (Gui.blackGrids * (x + 1) + Gui.colourGrids * x,
                      side_grids + Gui.blackGrids * (y + 1) + Gui.colourGrids * y),
@@ -180,7 +183,7 @@ class Gui:
         # up face
         for y in range(3):
             for x in range(3):
-                colour = cube_data[Cube.u][y][x]
+                colour = self.cube.data[Cube.u][y][x]
                 points = [
                     (Gui.blackGrids * (x + 1) + Gui.colourGrids * x,
                      Gui.blackGrids * (y + 1) + Gui.colourGrids * y),
@@ -192,12 +195,12 @@ class Gui:
                      (Gui.blackGrids + Gui.colourGrids) * (y + 1))
                 ]
                 skewed_points = [(side_grids + point[0] - point[1], point[1])
-                                for point in points]
+                                 for point in points]
                 polygons.append((colour, skewed_points))
         # right face
         for y in range(3):
             for x in range(3):
-                colour = cube_data[Cube.r][y][x]
+                colour = self.cube.data[Cube.r][y][x]
                 points = [
                     (Gui.blackGrids * (x + 1) + Gui.colourGrids * x,
                      Gui.blackGrids * (y + 1) + Gui.colourGrids * y),
@@ -213,8 +216,8 @@ class Gui:
                 polygons.append((colour, skewed_points))
         return polygons
 
-    def draw(self, cube_data):
-        polygons = self.get_polygons(cube_data)
+    def draw(self):
+        polygons = self.get_polygons()
         self.screen.fill((255, 255, 255))  # white background
         for polygon in polygons:
             points = [(i[0] * Gui.gridSize + Gui.margin, i[1] * Gui.gridSize + Gui.margin)
@@ -233,3 +236,21 @@ class Gui:
         self.screen.blit(scramble_text, dest=(610, 308))
 
         pygame.display.flip()
+
+    def apply_moves(self, moves_str):
+        for move in moves_str.split():
+            sleep(0.05)
+            self.cube.parse_move(move)
+            self.draw()
+
+    def run(self):
+        while True:
+            action = self.handle()
+            if action == -1:
+                break
+            elif action == 1:
+                self.apply_moves(get_scramble())
+            else:
+                self.draw()
+                if action is not None:
+                    self.apply_moves(action)
