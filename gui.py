@@ -266,7 +266,10 @@ class Gui:
             msg += "None"
         else:
             msg += corners
-        print(msg)
+        root = tk.Tk()
+        root.withdraw()
+        messagebox.showinfo("Blind Letters", msg)
+        root.destroy()
 
     def clear_moves(self):
         self.moves = iter([])
