@@ -241,9 +241,9 @@ RShift+e = S'"""
                 polygons.append((colour, skewed_points))
         return polygons
 
-    def draw(self):
+    def draw(self, background=(204, 204, 204)):
         polygons = self.get_polygons()
-        self.screen.fill((204, 204, 204))  # white background
+        self.screen.fill(background)  # white background
         for polygon in polygons:
             points = [(i[0] * Gui.gridSize + Gui.margin, i[1] * Gui.gridSize + Gui.margin)
                       for i in polygon[1]]
@@ -347,4 +347,13 @@ RShift+e = S'"""
                     next_move = next(self.moves, None)
                     if next_move is not None:
                         self.cube.parse_move(next_move)
+                        if self.cube.is_solved():
+                            self.draw((255, 255, 255))
+                            pygame.mixer.init()
+                            pygame.mixer.music.load("victory.mp3")
+                            pygame.mixer.music.play()
+                            pygame.time.set_timer(pygame.USEREVENT+1, 250)
+                elif event.type == pygame.USEREVENT+1:
+                    self.draw()
+                    pygame.time.set_timer(pygame.USEREVENT+1, 0)
             self.redraw()
