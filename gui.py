@@ -55,8 +55,8 @@ RShift+e = S'"""
         self.font = pygame.font.Font(pygame.font.get_default_font(), 16)
         self.mono_font = pygame.font.Font(pygame.font.match_font('mono'), 14)
         self.cube = cube
-
         self.moves = iter([])
+        self.buttons = []
 
     @staticmethod
     def map_keypress(key):
@@ -153,6 +153,14 @@ RShift+e = S'"""
     def get_colour(face):
         return Gui.colourMap[face]
 
+    def make_button(self, text, x, y, width, height, on_click):
+        button = pygame.Rect(x, y, width, height)
+        pygame.draw.rect(self.screen, (100, 100, 100), button)
+        button_text = self.font.render(text, True, (255, 255, 255))
+        self.screen.blit(button_text, dest=(x + 10, y + 8))
+        button_clicker = pygame.Rect(x, y, width, height)
+        self.buttons.append((button_clicker, on_click))
+
     def get_polygons(self):
         side_grids = Gui.colourGrids * 3 + Gui.blackGrids * 4
         polygons = [
@@ -245,47 +253,26 @@ RShift+e = S'"""
         bee_pic = pygame.image.load("media/logo_small.png")
         self.screen.blit(bee_pic, dest=(627, 40))
 
-        move_button = pygame.Rect(self.button_x, self.button_y, self.button_width, self.button_height)
-        pygame.draw.rect(self.screen, (100, 100, 100), move_button)
-        move_text = self.font.render("Enter Moves", True, (255, 255, 255))
-        self.screen.blit(move_text, dest=(self.button_x + 10, self.button_y + 8))
+        self.make_button("Enter Moves", self.button_x, self.button_y, self.button_width, self.button_height,
+                         lambda: self.apply_moves(self.get_text().split()))
 
-        blind_button = pygame.Rect(self.button_x, self.button_y + self.button_height + self.button_sep,
-                                   self.button_width, self.button_height)
-        pygame.draw.rect(self.screen, (100, 100, 100), blind_button)
-        blind_text = self.font.render("Find Positions", True, (255, 255, 255))
-        self.screen.blit(blind_text, dest=(self.button_x + 10,
-                                           self.button_y + self.button_height + self.button_sep + 8))
+        self.make_button("Find Positions", self.button_x, self.button_y + self.button_height + self.button_sep,
+                         self.button_width, self.button_height, self.show_blind)
 
-        scramble_button = pygame.Rect(self.button_x, self.button_y + 2 * (self.button_height + self.button_sep),
-                                      self.button_width, self.button_height)
-        pygame.draw.rect(self.screen, (100, 100, 100), scramble_button)
-        scramble_text = self.font.render("Scramble", True, (255, 255, 255))
-        self.screen.blit(scramble_text, dest=(self.button_x + 10,
-                                              self.button_y + 2 * (self.button_height + self.button_sep) + 8))
+        self.make_button("Scramble", self.button_x, self.button_y + 2 * (self.button_height + self.button_sep),
+                         self.button_width, self.button_height, lambda: self.apply_moves(get_scramble()))
 
-        start_scramble_button = pygame.Rect(self.button_x, self.button_y + 3 * (self.button_height + self.button_sep),
-                                            self.button_width, self.button_height)
-        pygame.draw.rect(self.screen, (100, 100, 100), start_scramble_button)
-        start_scramble_text = self.font.render("Scramble Continuously", True, (255, 255, 255))
-        self.screen.blit(start_scramble_text, dest=(self.button_x + 10,
-                                                    self.button_y + 3 * (self.button_height + self.button_sep) + 8))
+        self.make_button("Scramble Continuously", self.button_x,
+                         self.button_y + 3 * (self.button_height + self.button_sep), self.button_width,
+                         self.button_height, lambda: self.apply_moves(get_scramble_iterator()))
 
-        stop_button = pygame.Rect(self.button_x, self.button_y + 4 * (self.button_height + self.button_sep),
-                                  self.button_width, self.button_height)
-        pygame.draw.rect(self.screen, (100, 100, 100), stop_button)
-        stop_text = self.font.render("Stop", True, (255, 255, 255))
-        self.screen.blit(stop_text, dest=(self.button_x + 10,
-                                          self.button_y + 4 * (self.button_height + self.button_sep) + 8))
+        self.make_button("Stop", self.button_x, self.button_y + 4 * (self.button_height + self.button_sep),
+                         self.button_width, self.button_height, self.clear_moves)
 
-        reset_button = pygame.Rect(self.button_x, self.button_y + 5 * (self.button_height + self.button_sep),
-                                   self.button_width, self.button_height)
-        pygame.draw.rect(self.screen, (100, 100, 100), reset_button)
-        reset_text = self.font.render("Solve", True, (255, 255, 255))
-        self.screen.blit(reset_text, dest=(self.button_x + 10,
-                                           self.button_y + 5 * (self.button_height + self.button_sep) + 8))
+        self.make_button("Solve", self.button_x, self.button_y + 5 * (self.button_height + self.button_sep),
+                         self.button_width, self.button_height, self.reset)
 
-        keybinds_start = 610, 398
+        keybinds_start = 830, 150
         offset = 0
         for line in self.keybinds_str.splitlines(False):
             line_text = self.mono_font.render(line, True, (0, 0, 0))
@@ -293,6 +280,17 @@ RShift+e = S'"""
             offset += line_text.get_height() + 2
 
         pygame.display.flip()
+
+    def redraw(self):
+        polygons = self.get_polygons()
+        for polygon in polygons:
+            points = [(i[0] * Gui.gridSize + Gui.margin, i[1] * Gui.gridSize + Gui.margin)
+                      for i in polygon[1]]
+            width = Gui.edgeWidth if polygon[0] == -2 else 0
+            colour = self.get_colour(polygon[0])
+            pygame.draw.polygon(self.screen, colour, points, width)
+
+        pygame.display.update(pygame.Rect(50, 100, 450, 500))
 
     def apply_moves(self, moves):
         self.moves = chain(self.moves, moves)
@@ -323,8 +321,9 @@ RShift+e = S'"""
     def reset(self):
         self.cube = Cube()
 
-    def run(self):
-        pygame.time.set_timer(pygame.USEREVENT, 100)
+    def run(self, move_period=100):
+        pygame.time.set_timer(pygame.USEREVENT, move_period)
+        self.draw()
         while True:
             events = pygame.event.get()
             for event in events:
@@ -332,36 +331,13 @@ RShift+e = S'"""
                     return
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
-                    move_button = pygame.Rect(self.button_x, self.button_y, self.button_width, self.button_height)
-                    blind_button = pygame.Rect(self.button_x, self.button_y + self.button_height + self.button_sep,
-                                               self.button_width, self.button_height)
-                    scramble_button = pygame.Rect(self.button_x,
-                                                  self.button_y + 2 * (self.button_height + self.button_sep),
-                                                  self.button_width, self.button_height)
-                    start_scramble_button = pygame.Rect(self.button_x,
-                                                        self.button_y + 3 * (self.button_height + self.button_sep),
-                                                        self.button_width, self.button_height)
-                    stop_button = pygame.Rect(self.button_x, self.button_y + 4 * (self.button_height + self.button_sep),
-                                              self.button_width, self.button_height)
-                    reset_button = pygame.Rect(self.button_x,
-                                               self.button_y + 5 * (self.button_height + self.button_sep),
-                                               self.button_width, self.button_height)
-                    if move_button.collidepoint(pos):
-                        self.apply_moves(self.get_text().split())
-                    elif scramble_button.collidepoint(pos):
-                        self.apply_moves(get_scramble())
-                    elif blind_button.collidepoint(pos):
-                        self.show_blind()
-                    elif start_scramble_button.collidepoint(pos):
-                        self.apply_moves(get_scramble_iterator())
-                    elif stop_button.collidepoint(pos):
-                        self.clear_moves()
-                    elif reset_button.collidepoint(pos):
-                        self.reset()
+                    for button, button_action in self.buttons:
+                        if button.collidepoint(pos):
+                            button_action()
                 elif event.type == pygame.KEYDOWN:
                     self.apply_moves([self.map_keypress(event.key)])
                 elif event.type == pygame.USEREVENT:
                     next_move = next(self.moves, None)
                     if next_move is not None:
                         self.cube.parse_move(next_move)
-            self.draw()
+            self.redraw()
