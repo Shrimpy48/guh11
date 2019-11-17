@@ -18,11 +18,11 @@ class Gui:
         -1: (0, 0, 0),  # black for plastic
         -2: (100, 100, 100),  # grey for borders
         Cube.u: (255, 255, 255),  # white
-        Cube.d: (255, 255, 0),  # yellow
-        Cube.f: (0, 255, 0),  # green
-        Cube.b: (0, 0, 255),  # blue
+        Cube.d: (245, 255, 0),  # yellow
+        Cube.f: (0, 220, 0),  # green
+        Cube.b: (10, 0, 255),  # blue
         Cube.r: (255, 0, 0),  # red
-        Cube.l: (255, 127, 0)  # orange
+        Cube.l: (255, 136, 0)  # orange
     }
     edgeWidth = 2
     sideMultiplier = 0.7
