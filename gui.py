@@ -1,5 +1,6 @@
 import pygame
 import tkinter as tk
+from tkinter import messagebox
 from itertools import chain
 
 from cube import Cube
@@ -259,7 +260,6 @@ class Gui:
         else:
             msg += corners
         print(msg)
-
 
     def clear_moves(self):
         self.moves = iter([])
