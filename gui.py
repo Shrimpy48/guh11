@@ -30,15 +30,30 @@ class Gui:
     possibleMoves = ["x", "y", "z", "S", "M", "E"]
 
     button_x = 600
-    button_y = 200
+    button_y = 150
     button_width = 210
     button_height = 30
     button_sep = 10
+
+    keybinds_str = """Keybinds:
+w = U          i = x
+a = L          j = y
+s = F          k = x'
+d = R          l = y'
+q = D          u = z'
+e = B          o = z
+RShift+w = E'  LShift+<c> = c'
+RShift+a = M   LCtrl+<c> = c2
+RShift+s = S   LAlt+<c> = Cw
+RShift+d = M'
+RShift+q = E
+RShift+e = S'"""
 
     def __init__(self, cube):
         self.screen = pygame.display.set_mode(Gui.size)
         pygame.font.init()
         self.font = pygame.font.Font(pygame.font.get_default_font(), 16)
+        self.mono_font = pygame.font.Font(pygame.font.match_font('mono'), 14)
         self.cube = cube
 
         self.moves = iter([])
@@ -228,7 +243,7 @@ class Gui:
             pygame.draw.polygon(self.screen, colour, points, width)
 
         bee_pic = pygame.image.load("media/logo_small.png")
-        self.screen.blit(bee_pic, dest=(627, 90))
+        self.screen.blit(bee_pic, dest=(627, 40))
 
         move_button = pygame.Rect(self.button_x, self.button_y, self.button_width, self.button_height)
         pygame.draw.rect(self.screen, (100, 100, 100), move_button)
@@ -269,6 +284,13 @@ class Gui:
         reset_text = self.font.render("Solve", True, (255, 255, 255))
         self.screen.blit(reset_text, dest=(self.button_x + 10,
                                            self.button_y + 5 * (self.button_height + self.button_sep) + 8))
+
+        keybinds_start = 610, 398
+        offset = 0
+        for line in self.keybinds_str.splitlines(False):
+            line_text = self.mono_font.render(line, True, (0, 0, 0))
+            self.screen.blit(line_text, dest=(keybinds_start[0], keybinds_start[1] + offset))
+            offset += line_text.get_height() + 2
 
         pygame.display.flip()
 
