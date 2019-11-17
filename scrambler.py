@@ -1,5 +1,4 @@
 from random import randint, choice
-from functools import reduce
 from itertools import islice
 
 from cube import Cube
@@ -32,10 +31,8 @@ def check_result(move_1, move_2):
 
 
 def get_scramble(n_moves=randint(25, 35)):
-    """Produces a random string of moves to scramble the cube"""
-    moves = islice(get_scramble_iterator(), n_moves)
-    moves_str = reduce(lambda a, b: a + " " + b, moves)
-    return moves_str
+    """Produces a random list of moves to scramble the cube"""
+    return list(islice(get_scramble_iterator(), n_moves))
 
 
 def get_scramble_iterator():
@@ -78,14 +75,10 @@ def get_scrambled_cube_with_moves(cube=Cube(), n_moves=None):
         moves = get_scramble(n_moves)
     else:
         moves = get_scramble()
-    for move in moves.split():
+    for move in moves:
         cube.parse_move(move)
     return cube, moves
 
 
 def get_scrambled_cube(cube=Cube(), n_moves=None):
     return get_scrambled_cube_with_moves(cube, n_moves)[0]
-
-
-moves = get_scramble()
-print(moves)

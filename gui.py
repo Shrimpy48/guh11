@@ -1,9 +1,9 @@
 import pygame
 import tkinter as tk
-from time import sleep
+from itertools import chain
 
 from cube import Cube
-from scrambler import get_scramble
+from scrambler import get_scramble, get_scramble_iterator
 
 
 class Gui:
@@ -32,24 +32,10 @@ class Gui:
         self.font = pygame.font.Font(pygame.font.get_default_font(), 16)
         self.cube = cube
 
-    def handle(self):
-        events = pygame.event.get()
-        for event in events:
-            if event.type == pygame.QUIT:
-                return -1
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                pos = pygame.mouse.get_pos()
-                move_button = pygame.Rect(600, 100, 120, 30)
-                scramble_button = pygame.Rect(600, 300, 95, 30)
-                if move_button.collidepoint(pos):
-                    return self.get_text()
-                elif scramble_button.collidepoint(pos):
-                    return 1
-            elif event.type == pygame.KEYDOWN:
-                return self.handle_keypress(event.key)
+        self.moves = iter([])
 
     @staticmethod
-    def handle_keypress(key):
+    def map_keypress(key):
         keys = pygame.key.get_pressed()
         out_str = ""
         slice_mode = keys[pygame.K_RSHIFT]
@@ -237,20 +223,28 @@ class Gui:
 
         pygame.display.flip()
 
-    def apply_moves(self, moves_str):
-        for move in moves_str.split():
-            sleep(0.05)
-            self.cube.parse_move(move)
-            self.draw()
+    def apply_moves(self, moves):
+        self.moves = chain(self.moves, moves)
 
     def run(self):
+        pygame.time.set_timer(pygame.USEREVENT, 100)
         while True:
-            action = self.handle()
-            if action == -1:
-                break
-            elif action == 1:
-                self.apply_moves(get_scramble())
-            else:
-                self.draw()
-                if action is not None:
-                    self.apply_moves(action)
+            events = pygame.event.get()
+            for event in events:
+                if event.type == pygame.QUIT:
+                    return
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    pos = pygame.mouse.get_pos()
+                    move_button = pygame.Rect(600, 100, 120, 30)
+                    scramble_button = pygame.Rect(600, 300, 95, 30)
+                    if move_button.collidepoint(pos):
+                        self.apply_moves(self.get_text().split())
+                    elif scramble_button.collidepoint(pos):
+                        self.apply_moves(get_scramble())
+                elif event.type == pygame.KEYDOWN:
+                    self.apply_moves([self.map_keypress(event.key)])
+                elif event.type == pygame.USEREVENT:
+                    next_move = next(self.moves, None)
+                    if next_move is not None:
+                        self.cube.parse_move(next_move)
+            self.draw()
