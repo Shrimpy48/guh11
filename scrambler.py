@@ -1,5 +1,6 @@
 from random import randint, choice
 from functools import reduce
+from itertools import islice
 
 from cube import Cube
 
@@ -31,37 +32,45 @@ def check_result(move_1, move_2):
 
 
 def get_scramble(n_moves=randint(25, 35)):
+    """Produces a random string of moves to scramble the cube"""
+    moves = islice(get_scramble_iterator(), n_moves)
+    moves_str = reduce(lambda a, b: a + " " + b, moves)
+    return moves_str
+
+
+def get_scramble_iterator():
     """Produces a random sequence of moves to scramble the cube"""
-    moves = [choice(Cube.basic_moves) + choice(Cube.modifiers)]
-    while len(moves) < n_moves:
+    next_moves = [choice(Cube.basic_moves) + choice(Cube.modifiers)]
+    while True:
+        if len(next_moves) > 3:
+            move, next_moves = next_moves[-4], next_moves[-3:]
+            yield move
+
         new_move = choice(Cube.basic_moves) + choice(Cube.modifiers)
 
         # Check moves do not cancel each other
-        if len(moves) < 1:
-            moves.append(new_move)
+        if len(next_moves) < 1:
+            next_moves.append(new_move)
             continue
-        prev_move = moves[-1]
+        prev_move = next_moves[-1]
         res = check_result(prev_move, new_move)
         if res != prev_move + " " + new_move:
-            moves = moves[:-1] + res.split()
+            next_moves = next_moves[:-1] + res.split()
             continue
-        if len(moves) < 2:
-            moves.append(new_move)
+        if len(next_moves) < 2:
+            next_moves.append(new_move)
             continue
         if Cube.opposite.get(new_move[0]) != prev_move[0] and Cube.opposite.get(prev_move[0]) != new_move[0]:
-            moves.append(new_move)
+            next_moves.append(new_move)
             continue
-        prev_prev_move = moves[-2]
+        prev_prev_move = next_moves[-2]
         res = check_result(prev_prev_move, new_move).split()
         if len(res) < 1:
-            moves = moves[:-2] + [prev_move]
+            next_moves = next_moves[:-2] + [prev_move]
         elif len(res) < 2:
-            moves = moves[:-2] + [prev_move] + res
+            next_moves = next_moves[:-2] + [prev_move] + res
         else:
-            moves = moves[:-2] + [res[0]] + [prev_move] + [res[1]]
-
-    moves_str = reduce(lambda a, b: a + " " + b, moves)
-    return moves_str
+            next_moves = next_moves[:-2] + [res[0]] + [prev_move] + [res[1]]
 
 
 def get_scrambled_cube_with_moves(cube=Cube(), n_moves=None):
@@ -76,3 +85,7 @@ def get_scrambled_cube_with_moves(cube=Cube(), n_moves=None):
 
 def get_scrambled_cube(cube=Cube(), n_moves=None):
     return get_scrambled_cube_with_moves(cube, n_moves)[0]
+
+
+moves = get_scramble()
+print(moves)
