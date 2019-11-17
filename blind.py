@@ -2,12 +2,6 @@ from cube import Cube
 from random import choice
 from scrambler import get_scrambled_cube_with_moves
 
-cube = Cube()
-
-cube, moves = get_scrambled_cube_with_moves(cube)
-print(moves)
-print()
-
 def rotate_home(cube):
     for i in range(6):
         if cube.data[i][1][1] == 0:
@@ -88,7 +82,6 @@ def get_edge_from_pos(cube, position):
     opposite = cube.data[opposite_face][opposite_loc[0]][opposite_loc[1]]
 
     return [sticker, opposite]
-
 
 def get_blind(cube):
 
@@ -294,6 +287,3 @@ letter_scheme = [[["A","A","B"],
                  [["U","U","V"],
                   ["X","0","V"],
                   ["X","W","W"]],]
-
-
-get_blind(cube)
