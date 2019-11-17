@@ -1,25 +1,30 @@
 from cube import Cube
+from random import choice
+from scrambler import get_scrambled_cube_with_moves
 
 cube = Cube()
 
-cube.data = [[[0,4,1],
-            [1,0,4],
-            [4,4,1]],
-[[2,0,4],
-[5,1,2],
-[3,0,4]],
-        [[5,1,2],
-        [0,2,4],
-        [0,3,5]],
-               [[3,0,3],
-               [3,3,1],
-               [2,1,2]],
-                        [[5,5,5],
-                        [5,4,2],
-                        [1,2,4]],
-            [[1,5,3],
-            [3,5,2],
-            [0,3,0]]]
+cube, moves = get_scrambled_cube_with_moves(cube)
+print(moves)
+
+# cube.data = [[[0,4,1],
+#             [1,0,4],
+#             [4,4,1]],
+# [[2,0,4],
+# [5,1,2],
+# [3,0,4]],
+#         [[5,1,2],
+#          [0,2,4],
+#          [0,3,5]],
+#                  [[3,0,3],
+#                   [3,3,1],
+#                   [2,1,2]],
+#                           [[5,5,5],
+#                           [5,4,2],
+#                           [1,2,4]],
+#             [[1,5,3],
+#              [3,5,2],
+#              [0,3,0]]]
 
 def rotate_home(cube):
     for i in range(6):
@@ -50,12 +55,6 @@ def rotate_home(cube):
     elif green == 4:
         cube.parse_move("y2")
 
-face_mappings = [[4,3,2,1],
-                [0,2,5,4],
-                [0,3,5,1],
-                [0,4,5,2],
-                [0,1,5,3],
-                [2,3,4,1]]
 
 def get_pos_from_corner(sticker, left, right):
     solved = Cube()
@@ -86,6 +85,7 @@ def get_corner_from_pos(cube, position):
 
     return [sticker, left_sticker, right_sticker]
 
+# Returns the position where an edge should be, given it's colours
 def get_pos_from_edge(sticker, opposite):
     solved = Cube()
     for i in range(6):
@@ -96,6 +96,7 @@ def get_pos_from_edge(sticker, opposite):
                     return sticker_pos
     return "something went wrong"
 
+# Returns the colours of an edge, given the position on the cube in indices
 def get_edge_from_pos(cube, position):
     # position = [face, row, col]
     face = position[0]
@@ -109,25 +110,109 @@ def get_edge_from_pos(cube, position):
     return [sticker, opposite]
 
 
+
+
 def get_blind(cube):
+
+    def set_visited_edge(position):
+        if position in [[0, 0, 1], [4, 0, 1]]:
+            visited_edge[0] = 1
+        elif position in [[0, 1, 2], [3, 0, 1]]:
+            visited_edge[1] = 1
+        elif position in [[0, 2, 1], [2, 0, 1]]:
+            visited_edge[2] = 1
+        elif position in [[0, 1, 0], [1, 0, 1]]:
+            visited_edge[3] = 1
+        elif position in [[1, 1, 2], [2, 1, 0]]:
+            visited_edge[4] = 1
+        elif position in [[2, 1, 2], [3, 1, 0]]:
+            visited_edge[5] = 1
+        elif position in [[3, 1, 2], [4, 1, 0]]:
+            visited_edge[6] = 1
+        elif position in [[4, 1, 2], [1, 1, 0]]:
+            visited_edge[7] = 1
+        elif position in [[2, 2, 1], [5, 0, 1]]:
+            visited_edge[8] = 1
+        elif position in [[3, 2, 1], [5, 1, 2]]:
+            visited_edge[9] = 1
+        elif position in [[4, 2, 1], [5, 2, 1]]:
+            visited_edge[10] = 1
+        elif position in [[1, 2, 1], [5, 1, 0]]:
+            visited_edge[11] = 1
+
+    def check_visited_edge(position):
+        if position in [[0, 0, 1], [4, 0, 1]]:
+            return visited_edge[0] == 1
+        elif position in [[0, 1, 2], [3, 0, 1]]:
+            return visited_edge[1] == 1
+        elif position in [[0, 2, 1], [2, 0, 1]]:
+            return visited_edge[2] == 1
+        elif position in [[0, 1, 0], [1, 0, 1]]:
+            return visited_edge[3] == 1
+        elif position in [[1, 1, 2], [2, 1, 0]]:
+            return visited_edge[4] == 1
+        elif position in [[2, 1, 2], [3, 1, 0]]:
+            return visited_edge[5] == 1
+        elif position in [[3, 1, 2], [4, 1, 0]]:
+            return visited_edge[6] == 1
+        elif position in [[4, 1, 2], [1, 1, 0]]:
+            return visited_edge[7] == 1
+        elif position in [[2, 2, 1], [5, 0, 1]]:
+            return visited_edge[8] == 1
+        elif position in [[3, 2, 1], [5, 1, 2]]:
+            return visited_edge[9] == 1
+        elif position in [[4, 2, 1], [5, 2, 1]]:
+            return visited_edge[10] == 1
+        elif position in [[1, 2, 1], [5, 1, 0]]:
+            return visited_edge[11] == 1
+
+    visited_edge = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     rotate_home(cube)
-    print("corners")
 
-    corners_str = ""
+    print("edges")
 
-    edge = get_edge_from_pos(cube, [0,1,2])
-    to_pos = get_pos_from_edge(edge[0], edge[1])
+    edge_str = ""
 
-    corners_str += " " + letter_scheme[to_pos[0]][to_pos[1]][to_pos[2]]
+    to_pos = [0,1,2]
+    set_visited_edge(to_pos)
 
     while True:
         edge = get_edge_from_pos(cube, to_pos)
         to_pos = get_pos_from_edge(edge[0], edge[1])
-        corners_str += " " + letter_scheme[to_pos[0]][to_pos[1]][to_pos[2]]
-        if to_pos in  [[0,1,2],[3,1,0]]:
-            break
+        if check_visited_edge(to_pos):
+            if 0 not in visited_edge:
+                break
+            else:
+                while check_visited_edge(to_pos):
+                    to_pos = choice([[i] + lst for lst in [[0,1],[1,0],[1,2],[2,1]] for i in range(6)])
+                    print(to_pos)
+        else:
+            set_visited_edge(to_pos)
+        edge_str += " " + letter_scheme[to_pos[0]][to_pos[1]][to_pos[2]]
 
-    print(corners_str)
+    print(edge_str)
+
+    edges = edge_str.split()
+    i = 0
+    while i<len(edges)-1:
+        if edges[i] == edges[i+1]:
+            del edges[i:i+2]
+        else:
+            i += 1
+
+    edge_str = ""
+    for i in edges:
+        edge_str += " " + i
+
+    print(edge_str)
+
+face_mappings = [[4,3,2,1],
+                [0,2,5,4],
+                [0,3,5,1],
+                [0,4,5,2],
+                [0,1,5,3],
+                [2,3,4,1]]
+
 
 letter_scheme = [[["A","A","B"],
                   ["D","0","B"],
