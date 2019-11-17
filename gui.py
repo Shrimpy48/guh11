@@ -227,6 +227,9 @@ class Gui:
             colour = self.get_colour(polygon[0])
             pygame.draw.polygon(self.screen, colour, points, width)
 
+        bee_pic = pygame.image.load("media/logo_small.png")
+        self.screen.blit(bee_pic, dest=(627, 90))
+
         move_button = pygame.Rect(self.button_x, self.button_y, self.button_width, self.button_height)
         pygame.draw.rect(self.screen, (100, 100, 100), move_button)
         move_text = self.font.render("Enter Moves", True, (255, 255, 255))
