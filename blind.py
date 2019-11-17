@@ -243,16 +243,9 @@ def get_blind(cube):
     for i in corners:
         corner_str += " " + i
 
-    print("Edges:")
-    print(edge_str)
-
     parity = False
     if len(edges)%2 == 1:
         parity = True
-        print("\nParity detected")
-
-    print("\nCorners:")
-    print(corner_str)
 
     return edge_str.strip(), corner_str.strip(), parity
 
