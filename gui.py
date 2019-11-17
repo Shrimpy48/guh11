@@ -4,6 +4,7 @@ from itertools import chain
 
 from cube import Cube
 from scrambler import get_scramble, get_scramble_iterator
+from blind import get_blind
 
 
 class Gui:
@@ -211,20 +212,57 @@ class Gui:
             width = Gui.edgeWidth if polygon[0] == -2 else 0
             colour = self.get_colour(polygon[0])
             pygame.draw.polygon(self.screen, colour, points, width)
-        move_button = pygame.Rect(600, 100, 120, 30)
+
+        move_button = pygame.Rect(600, 100, 170, 30)
         pygame.draw.rect(self.screen, (100, 100, 100), move_button)
         move_text = self.font.render("Enter Moves", True, (255, 255, 255))
         self.screen.blit(move_text, dest=(610, 108))
 
-        scramble_button = pygame.Rect(600, 300, 95, 30)
+        blind_button = pygame.Rect(600, 200, 170, 30)
+        pygame.draw.rect(self.screen, (100, 100, 100), blind_button)
+        blind_text = self.font.render("Find Positions", True, (255, 255, 255))
+        self.screen.blit(blind_text, dest=(610, 208))
+
+        scramble_button = pygame.Rect(600, 300, 170, 30)
         pygame.draw.rect(self.screen, (100, 100, 100), scramble_button)
         scramble_text = self.font.render("Scramble", True, (255, 255, 255))
         self.screen.blit(scramble_text, dest=(610, 308))
+
+        start_scramble_button = pygame.Rect(600, 350, 170, 30)
+        pygame.draw.rect(self.screen, (100, 100, 100), start_scramble_button)
+        start_scramble_text = self.font.render("Start Scrambling", True, (255, 255, 255))
+        self.screen.blit(start_scramble_text, dest=(610, 358))
+
+        stop_button = pygame.Rect(600, 400, 170, 30)
+        pygame.draw.rect(self.screen, (100, 100, 100), stop_button)
+        stop_text = self.font.render("Stop", True, (255, 255, 255))
+        self.screen.blit(stop_text, dest=(610, 408))
 
         pygame.display.flip()
 
     def apply_moves(self, moves):
         self.moves = chain(self.moves, moves)
+
+    def show_blind(self):
+        edges, corners, parity = get_blind(self.cube)
+        msg = "Edges: "
+        if len(edges) < 1:
+            msg += "None"
+        else:
+            msg += edges
+        msg += "\n"
+        if parity:
+            msg += "There is parity\n"
+        msg += "Corners: "
+        if len(corners) < 1:
+            msg += "None"
+        else:
+            msg += corners
+        print(msg)
+
+
+    def clear_moves(self):
+        self.moves = iter([])
 
     def run(self):
         pygame.time.set_timer(pygame.USEREVENT, 100)
@@ -235,12 +273,21 @@ class Gui:
                     return
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
-                    move_button = pygame.Rect(600, 100, 120, 30)
-                    scramble_button = pygame.Rect(600, 300, 95, 30)
+                    move_button = pygame.Rect(600, 100, 170, 30)
+                    scramble_button = pygame.Rect(600, 300, 170, 30)
+                    start_scramble_button = pygame.Rect(600, 350, 170, 30)
+                    stop_button = pygame.Rect(600, 400, 170, 30)
+                    blind_button = pygame.Rect(600, 200, 170, 30)
                     if move_button.collidepoint(pos):
                         self.apply_moves(self.get_text().split())
                     elif scramble_button.collidepoint(pos):
                         self.apply_moves(get_scramble())
+                    elif blind_button.collidepoint(pos):
+                        self.show_blind()
+                    elif start_scramble_button.collidepoint(pos):
+                        self.apply_moves(get_scramble_iterator())
+                    elif stop_button.collidepoint(pos):
+                        self.clear_moves()
                 elif event.type == pygame.KEYDOWN:
                     self.apply_moves([self.map_keypress(event.key)])
                 elif event.type == pygame.USEREVENT:
