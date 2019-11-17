@@ -1,3 +1,6 @@
+from copy import deepcopy
+
+
 class Cube:
     u = 0
     l = 1
@@ -216,3 +219,37 @@ class Cube:
         elif move == "b":
             self.parse_move("z'")
             self.parse_move("F")
+
+    def rotate_home(self):
+        for i in range(6):
+            if self.data[i][1][1] == 0:
+                # if center white
+                white = i
+                break
+        if white == 1:
+            self.parse_move("z")
+        elif white == 2:
+            self.parse_move("x")
+        elif white == 3:
+            self.parse_move("z'")
+        elif white == 4:
+            self.parse_move("x'")
+        elif white == 5:
+            self.parse_move("x2")
+
+        for i in range(1,5):
+            if self.data[i][1][1] == 2:
+                # if green center
+                green = i
+                break
+        if green == 1:
+            self.parse_move("y")
+        elif green == 3:
+            self.parse_move("y'")
+        elif green == 4:
+            self.parse_move("y2")
+
+    def is_solved(self):
+        home_cube = deepcopy(self)
+        home_cube.rotate_home()
+        return home_cube.data == Cube().data

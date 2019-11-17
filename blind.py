@@ -2,34 +2,6 @@ from cube import Cube
 from random import choice
 from scrambler import get_scrambled_cube_with_moves
 
-def rotate_home(cube):
-    for i in range(6):
-        if cube.data[i][1][1] == 0:
-            # if center white
-            white = i
-            break
-    if white == 1:
-        cube.parse_move("z")
-    elif white == 2:
-        cube.parse_move("x")
-    elif white == 3:
-        cube.parse_move("z'")
-    elif white == 4:
-        cube.parse_move("x'")
-    elif white == 5:
-        cube.parse_move("x2")
-
-    for i in range(1,5):
-        if cube.data[i][1][1] == 2:
-            # if green center
-            green = i
-            break
-    if green == 1:
-        cube.parse_move("y")
-    elif green == 3:
-        cube.parse_move("y'")
-    elif green == 4:
-        cube.parse_move("y2")
 
 def get_pos_from_corner(sticker, left, right):
     solved = Cube()
@@ -44,6 +16,7 @@ def get_pos_from_corner(sticker, left, right):
                     else:
                         print("something has gone very wrong")
                         return
+
 
 def get_corner_from_pos(cube, position):
     # cube = Cube() and position = [face,row,col]
@@ -82,6 +55,7 @@ def get_edge_from_pos(cube, position):
     opposite = cube.data[opposite_face][opposite_loc[0]][opposite_loc[1]]
 
     return [sticker, opposite]
+
 
 def get_blind(cube):
 
@@ -177,7 +151,7 @@ def get_blind(cube):
     
     visited_corner = [0, 0, 0, 0, 0, 0, 0, 0]
 
-    rotate_home(cube)
+    cube.rotate_home()
 
     # Edges
 
