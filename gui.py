@@ -6,6 +6,7 @@ from itertools import chain
 from cube import Cube
 from scrambler import get_scramble, get_scramble_iterator
 from blind import get_blind
+from algs import algs
 
 
 class Gui:
@@ -271,6 +272,12 @@ RShift+e = S'"""
 
         self.make_button("Solve", self.button_x, self.button_y + 5 * (self.button_height + self.button_sep),
                          self.button_width, self.button_height, self.reset)
+
+        i = 0
+        for name, moves in algs.items():
+            self.make_button(name, self.button_x, self.button_y + (6 + i) * (self.button_height + self.button_sep),
+                         self.button_width, self.button_height, lambda x=moves: self.apply_moves(x.split()))
+            i += 1
 
         keybinds_start = 830, 150
         offset = 0
