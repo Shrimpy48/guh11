@@ -247,7 +247,7 @@ def get_blind(cube):
     print(edge_str)
 
     parity = False
-    if len(edge_str)%2 == 1:
+    if len(edges)%2 == 1:
         parity = True
         print("\nParity detected")
 
