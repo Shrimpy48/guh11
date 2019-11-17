@@ -254,7 +254,7 @@ def get_blind(cube):
     print("\nCorners:")
     print(corner_str)
 
-    return edges, corners, parity
+    return edge_str.strip(), corner_str.strip(), parity
 
 
 face_mappings = [[4,3,2,1],
