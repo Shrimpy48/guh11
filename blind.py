@@ -6,25 +6,7 @@ cube = Cube()
 
 cube, moves = get_scrambled_cube_with_moves(cube)
 print(moves)
-
-# cube.data = [[[0,4,1],
-#             [1,0,4],
-#             [4,4,1]],
-# [[2,0,4],
-# [5,1,2],
-# [3,0,4]],
-#         [[5,1,2],
-#          [0,2,4],
-#          [0,3,5]],
-#                  [[3,0,3],
-#                   [3,3,1],
-#                   [2,1,2]],
-#                           [[5,5,5],
-#                           [5,4,2],
-#                           [1,2,4]],
-#             [[1,5,3],
-#              [3,5,2],
-#              [0,3,0]]]
+print()
 
 def rotate_home(cube):
     for i in range(6):
@@ -54,7 +36,6 @@ def rotate_home(cube):
         cube.parse_move("y'")
     elif green == 4:
         cube.parse_move("y2")
-
 
 def get_pos_from_corner(sticker, left, right):
     solved = Cube()
@@ -106,10 +87,7 @@ def get_edge_from_pos(cube, position):
     opposite_loc = [[0,1],[1,2],[2,1],[1,0]][face_mappings[opposite_face].index(face)]
     opposite = cube.data[opposite_face][opposite_loc[0]][opposite_loc[1]]
 
-    print(sticker, opposite)
     return [sticker, opposite]
-
-
 
 
 def get_blind(cube):
@@ -166,14 +144,53 @@ def get_blind(cube):
         elif position in [[1, 2, 1], [5, 1, 0]]:
             return visited_edge[11] == 1
 
+    def set_visited_corner(position):
+        if position in [[0, 0, 0], [1, 0, 0], [4, 0, 2]]:
+            visited_corner[0] = 1
+        elif position in [[0, 0, 2], [3, 0, 2], [4, 0, 0]]:
+            visited_corner[1] = 1
+        elif position in [[0, 2, 2], [2, 0, 2], [3, 0, 0]]:
+            visited_corner[2] = 1
+        elif position in [[0, 2, 0], [1, 0, 2], [2, 0, 0]]:
+            visited_corner[3] = 1
+        elif position in [[5, 2, 0], [1, 2, 0], [4, 2, 2]]:
+            visited_corner[4] = 1
+        elif position in [[5, 2, 2], [3, 2, 2], [4, 2, 0]]:
+            visited_corner[5] = 1
+        elif position in [[5, 0, 2], [2, 2, 2], [3, 2, 0]]:
+            visited_corner[6] = 1
+        elif position in [[5, 0, 0], [1, 2, 2], [2, 2, 0]]:
+            visited_corner[7] = 1
+
+    def check_visited_corner(position):
+        if position in [[0, 0, 0], [1, 0, 0], [4, 0, 2]]:
+            return visited_corner[0] == 1
+        elif position in [[0, 0, 2], [3, 0, 2], [4, 0, 0]]:
+            return visited_corner[1] == 1
+        elif position in [[0, 2, 2], [2, 0, 2], [3, 0, 0]]:
+            return visited_corner[2] == 1
+        elif position in [[0, 2, 0], [1, 0, 2], [2, 0, 0]]:
+            return visited_corner[3] == 1
+        elif position in [[5, 2, 0], [1, 2, 0], [4, 2, 2]]:
+            return visited_corner[4] == 1
+        elif position in [[5, 2, 2], [3, 2, 2], [4, 2, 0]]:
+            return visited_corner[5] == 1
+        elif position in [[5, 0, 2], [2, 2, 2], [3, 2, 0]]:
+            return visited_corner[6] == 1
+        elif position in [[5, 0, 0], [1, 2, 2], [2, 2, 0]]:
+            return visited_corner[7] == 1
+
     visited_edge = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    
+    visited_corner = [0, 0, 0, 0, 0, 0, 0, 0]
+
     rotate_home(cube)
 
-    print("edges")
+    # Edges
 
     edge_str = ""
 
-    to_pos = [0,1,2]
+    to_pos = [0, 1, 2]
     set_visited_edge(to_pos)
 
     while True:
@@ -185,12 +202,9 @@ def get_blind(cube):
             else:
                 while check_visited_edge(to_pos):
                     to_pos = choice([[i] + lst for lst in [[0,1],[1,0],[1,2],[2,1]] for i in range(6)])
-                    print(to_pos)
         else:
             set_visited_edge(to_pos)
         edge_str += " " + letter_scheme[to_pos[0]][to_pos[1]][to_pos[2]]
-
-    print(edge_str)
 
     edges = edge_str.split()
     i = 0
@@ -204,7 +218,51 @@ def get_blind(cube):
     for i in edges:
         edge_str += " " + i
 
+    # corners
+
+    corner_str = ""
+
+    to_pos = [0, 0, 0]
+    set_visited_corner(to_pos)
+
+    while True:
+        corner = get_corner_from_pos(cube, to_pos)
+        to_pos = get_pos_from_corner(corner[0], corner[1], corner[2])
+        if check_visited_corner(to_pos):
+            if 0 not in visited_corner:
+                break
+            else:
+                while check_visited_corner(to_pos):
+                    to_pos = choice([[i] + lst for lst in [[0,0],[0,2],[2,0],[2,2]] for i in range(6)])
+        else:
+            set_visited_corner(to_pos)
+        corner_str += " " + letter_scheme[to_pos[0]][to_pos[1]][to_pos[2]]
+
+    corners = corner_str.split()
+    i = 0
+    while i < len(corners)-1:
+        if corners[i] == corners[i+1]:
+            del corners[i:i+2]
+        else:
+            i += 1
+
+    corner_str = ""
+    for i in corners:
+        corner_str += " " + i
+
+    print("Edges:")
     print(edge_str)
+
+    parity = False
+    if len(edge_str)%2 == 1:
+        parity = True
+        print("\nParity detected")
+
+    print("\nCorners:")
+    print(corner_str)
+
+    return edges, corners, parity
+
 
 face_mappings = [[4,3,2,1],
                 [0,2,5,4],
@@ -212,7 +270,6 @@ face_mappings = [[4,3,2,1],
                 [0,4,5,2],
                 [0,1,5,3],
                 [2,3,4,1]]
-
 
 letter_scheme = [[["A","A","B"],
                   ["D","0","B"],
@@ -240,4 +297,3 @@ letter_scheme = [[["A","A","B"],
 
 
 get_blind(cube)
-
