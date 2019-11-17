@@ -6,8 +6,11 @@ Current features:
 * Visual display
 * Move notation parser
 * Cube shuffler
+* Access to the shuffler
+* Keybindings
+* Slow scrambling
 
 Upcoming features:
 * Nicer display
-* Access to the shuffler
-* Blind solving helper
+* Blind solving helper button
+* Bee theme
