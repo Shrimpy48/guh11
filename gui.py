@@ -25,6 +25,7 @@ class Gui:
         Cube.l: (255, 127, 0)  # orange
     }
     edgeWidth = 2
+    sideMultiplier = 0.7
     possibleWideableMoves = ["u", "d", "r", "l", "f", "b"]
     possibleMoves = ["x", "y", "z", "S", "M", "E"]
 
@@ -137,7 +138,9 @@ class Gui:
             # black plastic
             (-1, [
                 (0, side_grids), (0, side_grids * 2), (side_grids, side_grids * 2),
-                (side_grids * 2, side_grids), (side_grids * 2, 0), (side_grids, 0)
+                (side_grids * (1 + Gui.sideMultiplier), side_grids * (2 - Gui.sideMultiplier)),
+                (side_grids * (1 + Gui.sideMultiplier), side_grids * (1 - Gui.sideMultiplier)),
+                (side_grids * Gui.sideMultiplier, side_grids * (1 - Gui.sideMultiplier))
             ]),
             # grey borders
             (-2, [
@@ -146,11 +149,13 @@ class Gui:
             ]),
             (-2, [
                 (0, side_grids), (side_grids, side_grids),
-                (side_grids * 2, 0), (side_grids, 0)
+                (side_grids * (1 + Gui.sideMultiplier), side_grids * (1 - Gui.sideMultiplier)),
+                (side_grids * Gui.sideMultiplier, side_grids * (1 - Gui.sideMultiplier))
             ]),
             (-2, [
                 (side_grids, side_grids), (side_grids, side_grids * 2),
-                (side_grids * 2, side_grids), (side_grids * 2, 0)
+                (side_grids * (1 + Gui.sideMultiplier), side_grids * (2 - Gui.sideMultiplier)),
+                (side_grids * (1 + Gui.sideMultiplier), side_grids * (1 - Gui.sideMultiplier))
             ])]
 
         # front face
@@ -182,7 +187,8 @@ class Gui:
                     (Gui.blackGrids * (x + 1) + Gui.colourGrids * x,
                      (Gui.blackGrids + Gui.colourGrids) * (y + 1))
                 ]
-                skewed_points = [(side_grids + point[0] - point[1], point[1])
+                skewed_points = [(side_grids * Gui.sideMultiplier + point[0] - point[1] * Gui.sideMultiplier,
+                    side_grids * (1 - Gui.sideMultiplier) + point[1] * Gui.sideMultiplier)
                                  for point in points]
                 polygons.append((colour, skewed_points))
         # right face
@@ -199,7 +205,8 @@ class Gui:
                     (Gui.blackGrids * (x + 1) + Gui.colourGrids * x,
                      (Gui.blackGrids + Gui.colourGrids) * (y + 1))
                 ]
-                skewed_points = [(side_grids + point[0], side_grids + point[1] - point[0])
+                skewed_points = [(side_grids + point[0] * Gui.sideMultiplier, 
+                    side_grids + point[1] - point[0] * Gui.sideMultiplier)
                                  for point in points]
                 polygons.append((colour, skewed_points))
         return polygons
