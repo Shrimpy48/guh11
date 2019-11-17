@@ -5,12 +5,9 @@ A virtual Rubik's Cube.
 Current features:
 * Visual display
 * Move notation parser
-* Cube shuffler
-* Access to the shuffler
+* Cube scrambler
 * Keybindings
-* Slow scrambling
+* One-by-one moves
 
 Upcoming features:
-* Nicer display
-* Blind solving helper button
 * Bee theme
