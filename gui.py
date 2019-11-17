@@ -242,6 +242,9 @@ RShift+e = S'"""
         return polygons
 
     def draw(self, background=(204, 204, 204)):
+
+        self.buttons = []
+
         polygons = self.get_polygons()
         self.screen.fill(background)  # white background
         for polygon in polygons:
