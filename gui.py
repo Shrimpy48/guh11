@@ -246,6 +246,11 @@ class Gui:
         stop_text = self.font.render("Stop", True, (255, 255, 255))
         self.screen.blit(stop_text, dest=(610, 408))
 
+        reset_button = pygame.Rect(600, 450, 170, 30)
+        pygame.draw.rect(self.screen, (100, 100, 100), reset_button)
+        reset_text = self.font.render("Solve", True, (255, 255, 255))
+        self.screen.blit(reset_text, dest=(610, 458))
+
         pygame.display.flip()
 
     def apply_moves(self, moves):
@@ -274,6 +279,9 @@ class Gui:
     def clear_moves(self):
         self.moves = iter([])
 
+    def reset(self):
+    	self.cube = Cube()
+
     def run(self):
         pygame.time.set_timer(pygame.USEREVENT, 100)
         while True:
@@ -288,6 +296,7 @@ class Gui:
                     start_scramble_button = pygame.Rect(600, 350, 170, 30)
                     stop_button = pygame.Rect(600, 400, 170, 30)
                     blind_button = pygame.Rect(600, 200, 170, 30)
+                    reset_button = pygame.Rect(600, 450, 170, 30)
                     if move_button.collidepoint(pos):
                         self.apply_moves(self.get_text().split())
                     elif scramble_button.collidepoint(pos):
@@ -298,6 +307,8 @@ class Gui:
                         self.apply_moves(get_scramble_iterator())
                     elif stop_button.collidepoint(pos):
                         self.clear_moves()
+                    elif reset_button.collidepoint(pos):
+                    	self.reset()
                 elif event.type == pygame.KEYDOWN:
                     self.apply_moves([self.map_keypress(event.key)])
                 elif event.type == pygame.USEREVENT:
